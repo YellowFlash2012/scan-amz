@@ -1,4 +1,5 @@
-import {NavLink} from "react-router-dom"
+import { Link, NavLink } from "react-router-dom";
+
 
 const Navbar = () => {
     return (
@@ -6,26 +7,35 @@ const Navbar = () => {
             <nav>
                 <div className="nav-links">
                     <ul>
-                        <li
-                            className={({ isActive }) =>
-                                isActive ? "active-link" : ""
-                            }
-                        >
-                            ALL
+                        <li>
+                            <NavLink
+                                to="/"
+                                className={(navLink) =>
+                                    navLink.isActive ? "active-link" : ""
+                                }
+                            >
+                                ALL
+                            </NavLink>
                         </li>
-                        <li
-                            className={({ isActive }) =>
-                                isActive ? "active-link" : ""
-                            }
-                        >
-                            CLOTHES
+                        <li>
+                            <NavLink
+                                to="/clothes"
+                                className={({ isActive }) =>
+                                    isActive ? "active-link" : ""
+                                }
+                            >
+                                CLOTHES
+                            </NavLink>
                         </li>
-                        <li
-                            className={({ isActive }) =>
-                                isActive ? "active-link" : ""
-                            }
-                        >
-                            TECH
+                        <li>
+                            <NavLink
+                                to="/tech"
+                                className={({ isActive }) =>
+                                    isActive ? "active-link" : ""
+                                }
+                            >
+                                TECH
+                            </NavLink>
                         </li>
                     </ul>
                 </div>
@@ -57,6 +67,8 @@ const Navbar = () => {
                             <i className="fa-brands fa-opencart"></i>
 
                             <div className="cart-item-number">2</div>
+
+                            <div className="viewport-overlay"></div>
 
                             <div className="cart-overlay">
                                 <div className="title">
