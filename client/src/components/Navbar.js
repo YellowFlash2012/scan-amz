@@ -1,7 +1,28 @@
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, decreaseCart } from "../features/cartSlice";
 
 
 const Navbar = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const cart = useSelector(state => state.cart);
+
+    const qtyIncreaseHandler = (item) => {
+        dispatch(addToCart(item))
+    }
+    
+    const qtyDecreaseHandler = (item) => {
+        dispatch(decreaseCart(item))
+    }
+
+    const viewBagHandler = () => {
+        navigate("/cart");
+    };
+
     return (
         <div>
             <nav>
@@ -66,72 +87,114 @@ const Navbar = () => {
                         <li className="cart">
                             <i className="fa-brands fa-opencart"></i>
 
-                            <div className="cart-item-number">2</div>
+                            <div className="cart-item-number">
+                                {cart.cartTotalQty}
+                            </div>
 
                             <div className="viewport-overlay"></div>
 
                             <div className="cart-overlay">
                                 <div className="title">
                                     <p>
-                                        My Bag, <span>2 items</span>
+                                        <span>My Bag</span>,{" "}
+                                        <span>
+                                            {cart.cartTotalQty}{" "}
+                                            {cart.cartTotalQty <= 1
+                                                ? "item"
+                                                : "items"}
+                                        </span>
                                     </p>
                                 </div>
 
-                                <div className="item-details">
-                                    <div className="item-detail">
-                                        <p className="item-name">Apollo</p>
+                                {cart.cartItems.length === 0 ? (
+                                    <>
+                                        <h3 className="empty-bag">Your bag is empty!</h3>
+                                    </>
+                                ) : (
+                                    <>
+                                            <div className="item-details">
+                                                {cart.cartItems.map((item)=>(<><div className="item-detail" key={item.id}>
+                                                <p className="item-name">
+                                                    {item.name}
+                                                </p>
 
-                                        <p className="item-desc">
-                                            Running Short
-                                        </p>
+                                                <p className="item-desc">
+                                                    {item.brand}
+                                                </p>
 
-                                        <p className="item-price">$50.00</p>
+                                                <p className="item-price">
+                                                    ${item.price}
+                                                </p>
 
-                                        <div className="item-size">
-                                            <span className="selected">S</span>
-                                            <span className="not-selected">
-                                                M
-                                            </span>
+                                                <div className="item-size">
+                                                    <span className="selected">
+                                                        {
+                                                            item.attribute
+                                                        }
+                                                    </span>
+                                                    <span className="not-selected">
+                                                        M
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="item-visual">
+                                                <div className="qty-details">
+                                                    <p
+                                                        className="plus"
+                                                        onClick={
+                                                            qtyIncreaseHandler
+                                                        }
+                                                    >
+                                                        +
+                                                    </p>
+
+                                                    <p className="qty">1</p>
+
+                                                    <p
+                                                        className="minus"
+                                                        onClick={
+                                                            qtyDecreaseHandler
+                                                        }
+                                                    >
+                                                        -
+                                                    </p>
+                                                </div>
+
+                                                <img
+                                                    src={item.gallery}
+                                                    alt=""
+                                                    className="item-img"
+                                                />
+                                            </div></>))}
+                                            
                                         </div>
-                                    </div>
 
-                                    <div className="item-visual">
-                                        <div className="qty-details">
-                                            <p className="plus">+</p>
-
-                                            <p className="qty">1</p>
-
-                                            <p className="minus">-</p>
+                                        <div className="cart-overlay-total">
+                                            <p className="total">Total</p>
+                                            <p className="total-amount">
+                                                $100.00
+                                            </p>
                                         </div>
 
-                                        <img
-                                            src="https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_2_720x.jpg?v=1612816087"
-                                            alt=""
-                                            className="item-img"
-                                        />
-                                    </div>
-                                </div>
+                                        <div className="cart-overlay-actions">
+                                            <button
+                                                type="button"
+                                                className="btn view-bag"
+                                                onClick={viewBagHandler}
+                                            >
+                                                VIEW BAG
+                                            </button>
 
-                                <div className="cart-overlay-total">
-                                    <p className="total">Total</p>
-                                    <p className="total-amount">$100.00</p>
-                                </div>
-
-                                <div className="cart-overlay-actions">
-                                    <button
-                                        type="button"
-                                        className="btn view-bag"
-                                    >
-                                        VIEW BAG
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        className="btn checkout"
-                                    >
-                                        CHECKOUT
-                                    </button>
-                                </div>
+                                            <button
+                                                type="button"
+                                                className="btn checkout"
+                                            >
+                                                CHECKOUT
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </li>
                     </ul>

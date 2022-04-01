@@ -131,8 +131,6 @@ li.cart:hover div.viewport-overlay {
   display: block;
 }
 
-
-
 div.viewport-overlay {
   width: 1205px;
   height: 85vh;
@@ -144,8 +142,6 @@ div.viewport-overlay {
   bottom: 0;
   top: 45px;
   
-  
-
   background: rgba(57, 55, 72, 0.22);
   z-index: 5;
 }
@@ -167,24 +163,29 @@ div.cart-item-number {
 div.cart-overlay {
   position: absolute;
   display: none;
-  right: -0.4rem;
-  top: 1.8rem;
+  right: -0.5rem;
+  top: 1.2rem;
   width: 20rem;
   height: 28rem;
   background: #FFFFFF;
   padding: 0.5rem;
 
   z-index: 999;
-
-  
 }
 
-.cart-overlay div.title p {
+.empty-bag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.cart-overlay div.title p span:first-of-type {
   font-family: "Raleway", sans-serif;
-  font-weight: 700, bold;
+  font-weight: 700;
   color: #1D1F22;
   font-size: 1rem;
-  margin-right: 0.5rem;
+  
 }
 
 .cart-overlay div.title p span {
@@ -251,7 +252,8 @@ div.item-detail .item-size span {
   margin-right: 1rem;
 }
 
-.qty-details .plus, .minus {
+.item-visual .qty-details .plus, 
+.item-visual .qty-details .minus {
   border: 2px solid #1D1F22;
   width: 1.5rem;
   height: 1.5rem;

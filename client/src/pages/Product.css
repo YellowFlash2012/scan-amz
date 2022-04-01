@@ -47,6 +47,7 @@ div.product-details .brand {
     text-transform: uppercase;
 }
 
+
 .attribute-name,
 .attribute-price {
     color: #1D1F22;
@@ -74,6 +75,12 @@ div.attribute-items .item {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.active-attribute-item {
+    background-color: #1D1F22;
+    color: #fff;
+    font-weight: bold;
 }
 
 p.price {
