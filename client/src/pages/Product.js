@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const Product = () => {
 
-    const navigate = useNavigate();
+    
     const dispatch = useDispatch();
 
     let { id } = useParams();
