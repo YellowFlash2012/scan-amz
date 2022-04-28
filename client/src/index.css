@@ -40,19 +40,23 @@ nav {
   display: flex;
 }
 
+.nav-links li:nth-of-type(2) {
+  margin: 0 1.5rem;
+}
+
+.nav-links li {
+  
+  text-transform: uppercase;
+}
+
+.nav-links a {
+  color: #000;
+}
 
 .active-link {
   color: #5ECE7B;
   padding-bottom: 1.5rem;
   border-bottom: 4px solid #5ECE7B;
-}
-
-.nav-links li:nth-of-type(2) {
-  margin: 0 1rem;
-}
-
-.nav-links a {
-  color: #000;
 }
 
 /* logo */
@@ -104,7 +108,9 @@ ul.currencies {
   padding: 0.8rem 1rem;
   left: -1.3rem;
 
-  background: #FFFFFF;;
+  background: #FFFFFF;
+
+  z-index: 5;
 
 }
 

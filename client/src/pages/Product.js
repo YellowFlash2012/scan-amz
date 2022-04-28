@@ -6,7 +6,8 @@ import "./Product.css"
 import { useQuery, gql } from "@apollo/client";
 
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios"
 
 
 const Product = () => {
@@ -47,29 +48,50 @@ const Product = () => {
                 }
             }
         }
-    `;
-
-    const { data, loading, error } = useQuery(PRODUCT_QUERY);
+        `;
     
-    console.log(data);
+    useEffect(() => {
+        axios({
+            url: "http://localhost:4000/",
+            method: "post",
+            data: {
+                query: `
+            query product {
+                product (id:"${id}") {
+                    gallery
+                }
+            }
+            `,
+            },
+        })
+            .then((res) => {
+                setStaticMainImg(res.data.data.product.gallery[0]);
+            })
+            .catch((error) => console.error(error));
+        },[id])
+        
+        
+    
+    const [staticMainImg, setStaticMainImg] = useState();
 
-    const [mainImg, setMainImg] = useState([
-        !loading && data.product.gallery[0],
-    ]);
+    const [mainImg, setMainImg] = useState();
+    
+    
+    
+    const { data, loading, error } = useQuery(PRODUCT_QUERY);
+    if (loading) return "Loading...";
+    if (error) return <pre>{error.message}</pre>;
 
     
     const setAttributeHandler = (e, id) => {
         console.log(id, e.target.innerText, "I was clicked");
-
+        
         if (e.target.innerText === id) {
             setPdtAttr(prevState => !prevState);
         } 
     };
-        
     
-    if (loading) return "Loading...";
-
-    if (error) return <pre>{error.message}</pre>;
+    
 
     const displayThumb = () => {
         
@@ -116,9 +138,14 @@ const Product = () => {
                                 <div
                                     key={uuidv4()}
                                     style={{ color: "{item.value}" }}
-                                    className={`item${!pdtAttr ? " " : " active-attribute-item"}`}
-
-                                    onClick={(e)=>setAttributeHandler(e,item.id)}
+                                    className={`item${
+                                        !pdtAttr
+                                            ? " "
+                                            : " active-attribute-item"
+                                    }`}
+                                    onClick={(e) =>
+                                        setAttributeHandler(e, item.id)
+                                    }
                                 >
                                     {item.displayValue}
                                 </div>

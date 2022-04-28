@@ -55,7 +55,7 @@ function App() {
               <Navbar />
               <Routes>
                   <Route
-                      path="/"
+                      path="/all"
                       element={
                           <Home data={data} loading={loading} error={error} />
                       }

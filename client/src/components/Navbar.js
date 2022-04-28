@@ -2,6 +2,24 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, decreaseCart } from "../features/cartSlice";
+import { useQuery, gql } from "@apollo/client";
+import { v4 as uuidv4 } from "uuid";
+
+const CATEGORIES_QUERY = gql`
+    query {
+        categories {
+            name
+            products {
+                prices {
+                    currency {
+                        label
+                        symbol
+                    }
+                }
+            }
+        }
+    }
+`;
 
 
 const Navbar = () => {
@@ -9,7 +27,13 @@ const Navbar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const { data, loading, error } = useQuery(CATEGORIES_QUERY);
+    console.log(data);
+
     const cart = useSelector(state => state.cart);
+
+    if (loading) return "Loading...";
+    if (error) return <pre>{error.message}</pre>;
 
     const qtyIncreaseHandler = (item) => {
         dispatch(addToCart(item))
@@ -28,59 +52,47 @@ const Navbar = () => {
             <nav>
                 <div className="nav-links">
                     <ul>
-                        <li>
-                            <NavLink
-                                to="/"
-                                className={(navLink) =>
-                                    navLink.isActive ? "active-link" : ""
-                                }
-                            >
-                                ALL
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
-                                to="/clothes"
-                                className={({ isActive }) =>
-                                    isActive ? "active-link" : ""
-                                }
-                            >
-                                CLOTHES
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
-                                to="/tech"
-                                className={({ isActive }) =>
-                                    isActive ? "active-link" : ""
-                                }
-                            >
-                                TECH
-                            </NavLink>
-                        </li>
+                        {data.categories.map((category) => (
+                            <li key={category.name}>
+                                <NavLink
+                                    to={`/${category.name}`}
+                                    className={({ isActive }) =>
+                                        isActive ? "active-link" : ""
+                                    }
+                                >
+                                    {category.name}
+                                </NavLink>
+                            </li>
+                        ))}
                     </ul>
                 </div>
 
-                <div className="logo">Mayra</div>
+                <div className="logo">MAYRA</div>
 
                 <div className="cart-overview">
                     <ul className="currency-switcher">
                         <li className="currency-selector">
-                            ${" "}
+                            £{" "}
                             <span>
                                 <i className="fa-solid fa-angle-down open"></i>
                                 <i className="fa-solid fa-angle-up close"></i>
                             </span>
                             <ul className="currencies">
-                                <li>$ USD</li>
-
-                                <li>£ GBP</li>
-
-                                <li>A$ AUD</li>
-
-                                <li>¥ JPY</li>
-
-                                <li>₽ RUB</li>
+                                {data.categories.map((category) =>
+                                    category.products.map((pdt) =>
+                                        pdt.prices.map(
+                                            (price) => (
+                                                <li key={uuidv4()}>
+                                                    {
+                                                        price.currency
+                                                            .symbol}{" "}
+                                                    {
+                                                        price.currency.label}
+                                                </li>
+                                            )
+                                        )
+                                    )
+                                )}
                             </ul>
                         </li>
 
@@ -108,66 +120,74 @@ const Navbar = () => {
 
                                 {cart.cartItems.length === 0 ? (
                                     <>
-                                        <h3 className="empty-bag">Your bag is empty!</h3>
+                                        <h3 className="empty-bag">
+                                            Your bag is empty!
+                                        </h3>
                                     </>
                                 ) : (
                                     <>
-                                            <div className="item-details">
-                                                {cart.cartItems.map((item)=>(<><div className="item-detail" key={item.id}>
-                                                <p className="item-name">
-                                                    {item.name}
-                                                </p>
-
-                                                <p className="item-desc">
-                                                    {item.brand}
-                                                </p>
-
-                                                <p className="item-price">
-                                                    ${item.price}
-                                                </p>
-
-                                                <div className="item-size">
-                                                    <span className="selected">
-                                                        {
-                                                            item.attribute
-                                                        }
-                                                    </span>
-                                                    <span className="not-selected">
-                                                        M
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="item-visual">
-                                                <div className="qty-details">
-                                                    <p
-                                                        className="plus"
-                                                        onClick={
-                                                            qtyIncreaseHandler
-                                                        }
+                                        <div className="item-details">
+                                            {cart.cartItems.map((item) => (
+                                                <>
+                                                    <div
+                                                        className="item-detail"
+                                                        key={item.id}
                                                     >
-                                                        +
-                                                    </p>
+                                                        <p className="item-name">
+                                                            {item.name}
+                                                        </p>
 
-                                                    <p className="qty">1</p>
+                                                        <p className="item-desc">
+                                                            {item.brand}
+                                                        </p>
 
-                                                    <p
-                                                        className="minus"
-                                                        onClick={
-                                                            qtyDecreaseHandler
-                                                        }
-                                                    >
-                                                        -
-                                                    </p>
-                                                </div>
+                                                        <p className="item-price">
+                                                            ${item.price}
+                                                        </p>
 
-                                                <img
-                                                    src={item.gallery}
-                                                    alt=""
-                                                    className="item-img"
-                                                />
-                                            </div></>))}
-                                            
+                                                        <div className="item-size">
+                                                            <span className="selected">
+                                                                {item.attribute}
+                                                            </span>
+                                                            <span className="not-selected">
+                                                                M
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="item-visual">
+                                                        <div className="qty-details">
+                                                            <p
+                                                                className="plus"
+                                                                onClick={
+                                                                    qtyIncreaseHandler
+                                                                }
+                                                            >
+                                                                +
+                                                            </p>
+
+                                                            <p className="qty">
+                                                                1
+                                                            </p>
+
+                                                            <p
+                                                                className="minus"
+                                                                onClick={
+                                                                    qtyDecreaseHandler
+                                                                }
+                                                            >
+                                                                -
+                                                            </p>
+                                                        </div>
+
+                                                        <img
+                                                            src={item.gallery}
+                                                            alt=""
+                                                            className="item-img"
+                                                        />
+                                                    </div>
+                                                </>
+                                            ))}
                                         </div>
 
                                         <div className="cart-overlay-total">
